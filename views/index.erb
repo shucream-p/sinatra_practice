@@ -1,0 +1,9 @@
+<h2>Memo List</h2>
+<div class='center'>
+  <a href='/memos/new'><i class='far fa-edit'></i></a>
+<div>
+<ul class='list'>
+  <% @memos.each do | id, memo | %>
+  <li><a href=<%= "/memos/#{id}" %> class='link'><%= "#{h(memo['title'])}" %></a></li>
+  <% end %>
+</ul>
