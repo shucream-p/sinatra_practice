@@ -30,9 +30,7 @@ post '/memos' do
   params[:title] = 'No Title' if params[:title] == ''
   memos[SecureRandom.uuid] = params
 
-  File.open('db/data_file.json', 'w') do |file|
-    JSON.dump(memos, file)
-  end
+  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
 
   redirect '/memos'
 end
@@ -45,9 +43,7 @@ end
 delete '/memos/:id' do
   memos.delete(params[:id])
 
-  File.open('db/data_file.json', 'w') do |file|
-    JSON.dump(memos, file)
-  end
+  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
 
   redirect '/memos'
 end
@@ -61,9 +57,7 @@ patch '/memos/:id' do
   params[:title] = 'No Title' if params[:title] == ''
   memos[params[:id]] = { 'title' => params[:title], 'contents' => params[:contents] }
 
-  File.open('db/data_file.json', 'w') do |file|
-    JSON.dump(memos, file)
-  end
+  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
 
   redirect '/memos'
 end
