@@ -39,7 +39,7 @@ end
 
 get '/memos/:id' do
   @id = params[:id]
-  erb :show 
+  erb :show
 end
 
 delete '/memos/:id' do
@@ -59,7 +59,7 @@ end
 
 patch '/memos/:id' do
   params[:title] = 'No Title' if params[:title] == ''
-  memos[params[:id]] = {'title' => params[:title], 'contents' => params[:contents]}
+  memos[params[:id]] = { 'title' => params[:title], 'contents' => params[:contents] }
 
   File.open('db/data_file.json', 'w') do |file|
     JSON.dump(memos, file)
