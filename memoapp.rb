@@ -6,9 +6,7 @@ require 'erb'
 require 'json'
 require 'securerandom'
 
-memos = File.open('db/data_file.json') do |file|
-          JSON.load(file)
-        end
+memos = JSON.parse(File.read('db/data_file.json'))
 
 before do
   @memos = memos
