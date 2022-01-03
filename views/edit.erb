@@ -2,7 +2,7 @@
   <input type='hidden' name='_method' value='patch'>
   <label for='title'>Title</label>
     <div class='center'>
-      <input type='text' value=<%= @memos[@id]['title'] %> name='title'>
+      <input type='text' value=<%= "#{h(@memos[@id]['title'])}" %> name='title'>
     </div>
   <label for='contents'>Contents</label>
     <div class='center'>
