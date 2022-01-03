@@ -21,7 +21,7 @@ $ bundle install
 5. Bundler経由でmemoapp.rbを起動してください。
 
 ```
-$ bundler exec ruby memoapp.rb
+$ bundle exec ruby memoapp.rb
 ```
 
 6. ブラウザで`http://localhost:4567/memos`にアクセスしてください。
