@@ -7,18 +7,18 @@
 ```
 $ git clone https://github.com/shucream-p/sinatra_practice.git
 ```
-1. `cd sinatra_plactice`でカレントディレクトリを変更してください。
-1. Bundlerをインストールしてください。
+2. `cd sinatra_plactice`でカレントディレクトリを変更してください。
+3. Bundlerをインストールしてください。
 
 ```
 $ gem install bundler
 ```
-1. Bundlerでgemを一括インストールしてください。(Gemfileに記述されたgemが一括インストールされます。)
+4. Bundlerでgemを一括インストールしてください。(Gemfileに記述されたgemが一括インストールされます。)
 
 ```
 $ bundle install
 ```
-1. Bundler経由でmemoapp.rbを起動してください。
+5. Bundler経由でmemoapp.rbを起動してください。
 
 ```
 $ bundler exec ruby memoapp.rb
