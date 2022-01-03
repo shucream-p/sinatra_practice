@@ -23,3 +23,5 @@ $ bundle install
 ```
 $ bundler exec ruby memoapp.rb
 ```
+
+6. ブラウザで`http://localhost:4567/memos`にアクセスしてください。
