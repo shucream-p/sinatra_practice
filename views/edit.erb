@@ -1,0 +1,24 @@
+<form action=<%= "/memos/#{@id}" %> method= 'post'>
+  <input type='hidden' name='_method' value='patch'>
+  <label for='title'>Title</label>
+    <div class='center'>
+      <input type='text' value=<%= "#{h(@memos[@id]['title'])}" %> name='title'>
+    </div>
+  <label for='contents'>Contents</label>
+    <div class='center'>
+      <textarea name='contents' rows='10' cols='40'><%= @memos[@id]['contents'] %></textarea>
+    </div>
+  <div class='button'>
+    <button type='submit'>更新</button>
+  </div>
+</form>
+<div class='button'>
+  <button>
+    <a href=<%= "/memos/#{@id}" %>>戻る</a>
+  </button>
+</div>
+<div class='button'>
+  <button>
+    <a href='/memos'>TOP</a>
+  </button>
+</div>
