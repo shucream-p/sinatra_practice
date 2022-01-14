@@ -3,14 +3,9 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'erb'
-require 'json'
-require 'securerandom'
+require 'pg'
 
-memos = JSON.parse(File.read('db/data_file.json'))
-
-before do
-  @memos = memos
-end
+connection = PG.connect(dbname: 'memo_db')
 
 helpers do
   def h(text)
@@ -19,6 +14,7 @@ helpers do
 end
 
 get '/memos' do
+  @memos = connection.exec('SELECT id, title FROM Memos')
   erb :index
 end
 
@@ -29,39 +25,35 @@ end
 post '/memos' do
   # タイトルの入力がない場合に自動的に'No Title'を入れる処理
   params[:title] = 'No Title' if params[:title] == ''
-  # ハッシュmemosの中で、キーにランダムに生成された文字列、値にparams（メモのタイトル、内容）をそれぞれ持つ
-  memos[SecureRandom.uuid] = params
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  title = params[:title]
+  contents = params[:contents]
+  connection.exec('INSERT INTO Memos (title, contents) VALUES ($1, $2)', [title, contents])
   redirect '/memos'
 end
 
 get '/memos/:id' do
   @id = params[:id]
+  @memo = connection.exec('SELECT title, contents FROM Memos WHERE id = $1', [@id])
   erb :show
 end
 
 delete '/memos/:id' do
-  # memosのキーを指定して、要素（メモ）を削除する
-  memos.delete(params[:id])
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  id = params[:id]
+  connection.exec('DELETE FROM Memos WHERE id = $1', [id])
   redirect '/memos'
 end
 
 get '/memos/:id/edit' do
   @id = params[:id]
+  @memo = connection.exec('SELECT title, contents FROM Memos WHERE id = $1', [@id])
   erb :edit
 end
 
 patch '/memos/:id' do
   params[:title] = 'No Title' if params[:title] == ''
-  # memosのキーを指定して、値（メモ）の更新を行う
-  memos[params[:id]] = { 'title' => params[:title], 'contents' => params[:contents] }
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  title = params[:title]
+  contents = params[:contents]
+  id = params[:id]
+  connection.exec('UPDATE Memos SET title = $1, contents = $2 WHERE id = $3', [title, contents, id])
   redirect '/memos'
 end
