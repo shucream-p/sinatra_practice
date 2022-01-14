@@ -38,7 +38,7 @@ memo_db=# CREATE TABLE Memos
            PRIMARY KEY (id));
 ```
 
-###アプリケーションを準備する
+### アプリケーションを準備する
 1. 作業PCの任意の作業ディレクトリにて`git clone`してください。
 
 ```
