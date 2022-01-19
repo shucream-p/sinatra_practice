@@ -3,7 +3,7 @@
   <a href='/memos/new'><i class='far fa-edit'></i></a>
 <div>
 <ul class='list'>
-  <% @memos.each do | id, memo | %>
-  <li><a href=<%= "/memos/#{id}" %> class='link'><%= "#{h(memo['title'])}" %></a></li>
+  <% @memos.each do | row | %>
+  <li><a href=<%= "/memos/#{row['id']}" %> class='link'><%= "#{h(row['title'])}" %></a></li>
   <% end %>
 </ul>

@@ -3,13 +3,33 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'erb'
-require 'json'
-require 'securerandom'
+require 'pg'
 
-memos = JSON.parse(File.read('db/data_file.json'))
+class DB
+  @connection = PG.connect(dbname: 'memo_db')
 
-before do
-  @memos = memos
+  class << self
+    # デフォルトでは全行、idの指定があればその行だけ読み込むメソッド
+    def read(id: false)
+      if id
+        @connection.exec('SELECT * FROM Memos WHERE id = $1', [id])
+      else
+        @connection.exec('SELECT * FROM Memos')
+      end
+    end
+
+    def create(title, contents)
+      @connection.exec('INSERT INTO Memos (title, contents) VALUES ($1, $2)', [title, contents])
+    end
+
+    def delete(id)
+      @connection.exec('DELETE FROM Memos WHERE id = $1', [id])
+    end
+
+    def update(title, contents, id)
+      @connection.exec('UPDATE Memos SET title = $1, contents = $2 WHERE id = $3', [title, contents, id])
+    end
+  end
 end
 
 helpers do
@@ -19,6 +39,7 @@ helpers do
 end
 
 get '/memos' do
+  @memos = DB.read
   erb :index
 end
 
@@ -29,39 +50,29 @@ end
 post '/memos' do
   # タイトルの入力がない場合に自動的に'No Title'を入れる処理
   params[:title] = 'No Title' if params[:title] == ''
-  # ハッシュmemosの中で、キーにランダムに生成された文字列、値にparams（メモのタイトル、内容）をそれぞれ持つ
-  memos[SecureRandom.uuid] = params
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  DB.create(params[:title], params[:contents])
   redirect '/memos'
 end
 
 get '/memos/:id' do
+  @memo = DB.read(id: params[:id])
   @id = params[:id]
   erb :show
 end
 
 delete '/memos/:id' do
-  # memosのキーを指定して、要素（メモ）を削除する
-  memos.delete(params[:id])
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  DB.delete(params[:id])
   redirect '/memos'
 end
 
 get '/memos/:id/edit' do
+  @memo = DB.read(id: params[:id])
   @id = params[:id]
   erb :edit
 end
 
 patch '/memos/:id' do
   params[:title] = 'No Title' if params[:title] == ''
-  # memosのキーを指定して、値（メモ）の更新を行う
-  memos[params[:id]] = { 'title' => params[:title], 'contents' => params[:contents] }
-
-  File.open('db/data_file.json', 'w') { |file| JSON.dump(memos, file) }
-
+  DB.update(params[:title], params[:contents], params[:id])
   redirect '/memos'
 end
